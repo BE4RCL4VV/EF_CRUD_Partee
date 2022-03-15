@@ -8,6 +8,7 @@ namespace EF_CRUD.Context
 {
     public partial class SalesContext : DbContext
     {
+
         public static IConfiguration Configuration;
         public SalesContext()
         {
@@ -19,6 +20,7 @@ namespace EF_CRUD.Context
             Configuration = configuration;
         }
 
+        public virtual DbSet<Company> Companies { get; set; } = null!;
         public virtual DbSet<Customer> Customers { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -31,11 +33,20 @@ namespace EF_CRUD.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Company>(entity =>
+            {
+                entity.ToTable("Company");
+
+                entity.Property(e => e.CompanyId).HasColumnName("CompanyID");
+
+                entity.Property(e => e.Company1)
+                    .HasMaxLength(40)
+                    .HasColumnName("Company");
+            });
+
             modelBuilder.Entity<Customer>(entity =>
             {
                 entity.ToTable("Customer");
-
-                entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.City).HasMaxLength(40);
 
